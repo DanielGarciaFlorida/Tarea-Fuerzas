@@ -3,12 +3,14 @@ using UnityEngine.InputSystem;
 
 public class Cohete : MonoBehaviour
 {
-    public float force = 300000f;
+    public float thrustForce = 300000f;
+    private float currentMass;
+    private float acceleration;
 
     private Rigidbody rb;
     private PlayerInputActions inputActions;
-
     private bool isThrusting = false;
+
     void Awake()
     {
         inputActions = new PlayerInputActions();
@@ -29,13 +31,19 @@ public class Cohete : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         inputActions.Gameplay.Enable();
+
+        currentMass = rb.mass;
+        if (currentMass > 0)
+        {
+            acceleration = thrustForce / currentMass;
+        }
     }
 
     void FixedUpdate()
     {
         if (isThrusting)
         {
-            rb.AddForce(Vector3.up * force, ForceMode.Force);
+            rb.AddForce(Vector3.up * acceleration, ForceMode.Acceleration);
 
         }
     }
